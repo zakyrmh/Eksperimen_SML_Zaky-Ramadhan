@@ -35,7 +35,7 @@ def run_preprocessing(input_path, output_dir):
     
     # 6. Menyimpan Hasil Preprocessing
     os.makedirs(output_dir, exist_ok=True)
-    output_file = os.path.join(output_dir, "data_bersih.csv")
+    output_file = os.path.join(output_dir, "data_clean.csv")
     df_clean.to_csv(output_file, index=False)
     
     print(f"=== Preprocessing Selesai! Data disimpan di: {output_file} ===")
