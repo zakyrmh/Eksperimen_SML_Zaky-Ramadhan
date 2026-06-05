@@ -14,11 +14,10 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Set Up Python 3.12.7
+    - name: Set Up Python 3.12.10
       uses: actions/setup-python@v5
       with:
-        python-version: '3.12.7'
-        cache: 'pip'
+        python-version: '3.12.10'
 
     - name: Install Required Packages
       run: |
@@ -33,5 +32,6 @@ jobs:
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
-        git add preprocessing/namadataset_preprocessing/data_bersih.csv
-        git diff-index --quiet HEAD || (git commit -m "Umpan Balik Otomatis: Memperbarui data_bersih.csv via GitHub Actions" && git push)
+        # Perbaikan: Mengubah dari data_bersih.csv menjadi data_clean.csv
+        git add preprocessing/namadataset_preprocessing/data_clean.csv
+        git diff-index --quiet HEAD || (git commit -m "Umpan Balik Otomatis: Memperbarui data_clean.csv via GitHub Actions" && git push)
