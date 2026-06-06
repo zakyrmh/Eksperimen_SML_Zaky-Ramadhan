@@ -3,7 +3,7 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler
 
 def run_preprocessing(input_path, output_dir):
-    print("=== Memulai Proses Preprocessing Data ===")
+    print("=== Memulai Proses Preprocessing Data (AqSolDB) ===")
     
     if not os.path.exists(input_path):
         raise FileNotFoundError(f"Data mentah tidak ditemukan di: {input_path}")
@@ -14,14 +14,15 @@ def run_preprocessing(input_path, output_dir):
     # 2. Handling Missing Values
     df = df.dropna()
     
-    # 3. Transformasi Target ke Klasifikasi Biner (Skor >= 6 dianggap Good (1))
-    if 'quality' in df.columns:
-        df['target'] = (df['quality'] >= 6).astype(int)
-        df = df.drop(columns=['quality'])
+    # 3. Transformasi Target ke Klasifikasi Biner
+    # Nilai Solubility (LogS) >= -3.0 dikategorikan sebagai larut/High Solubility (1), sisanya (0)
+    if 'Solubility' in df.columns:
+        df['target'] = (df['Solubility'] >= -3.0).astype(int)
     
-    # 4. Encoding jika terdapat kolom kategorial 'type' (red/white wine)
-    if 'type' in df.columns:
-        df = pd.get_dummies(df, columns=['type'], drop_first=True)
+    # 4. Drop Kolom Identitas Senyawa & Metadata yang tidak digunakan untuk pemodelan
+    cols_to_drop = ['ID', 'Name', 'InChI', 'InChIKey', 'SMILES', 'Solubility', 'SD', 'Ocurrences', 'Group']
+    existing_drops = [col for col in cols_to_drop if col in df.columns]
+    df = df.drop(columns=existing_drops)
     
     # 5. Feature Scaling
     X = df.drop(columns=['target'])
@@ -42,7 +43,8 @@ def run_preprocessing(input_path, output_dir):
 
 if __name__ == "__main__":
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    INPUT_DATA = os.path.join(BASE_DIR, "namadataset_raw", "winequality-combined.csv")
+    # Pastikan file CSV mentahan AqSolDB Anda di simpan dengan nama 'curated-solubility-dataset.csv' di folder namadataset_raw
+    INPUT_DATA = os.path.join(BASE_DIR, "namadataset_raw", "curated-solubility-dataset.csv")
     OUTPUT_DIR = os.path.join(BASE_DIR, "preprocessing", "namadataset_preprocessing")
     
     run_preprocessing(INPUT_DATA, OUTPUT_DIR)
